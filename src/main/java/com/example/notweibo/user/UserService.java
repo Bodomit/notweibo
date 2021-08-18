@@ -38,7 +38,7 @@ public class UserService {
         if(existingUser.isPresent()){
             throw new UserEmailAlreadyInUseException(newUser.getEmail());
         }
-        // userRepository.save(newUser);
+        userRepository.save(newUser);
     }
 
     public void deleteUser(Long id) {

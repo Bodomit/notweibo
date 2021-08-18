@@ -54,7 +54,9 @@ public class UserRepositoryTests {
         assertEquals(0, users.size());
 
         userRepository.saveAll(defaultUsers);
-        assertEquals(defaultUsers.size(), users.size());
+
+        List<User> savedUsers = userRepository.findAll();
+        assertEquals(defaultUsers.size(), savedUsers.size());
     }
 
     @Test

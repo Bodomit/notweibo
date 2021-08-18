@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -79,6 +78,28 @@ public class UserControllerTests {
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
+
+        verify(userService).addNewUser(any(User.class));
+    }
+
+    @Test
+    public void testRegisterNewUserAlreadyInUse() throws Exception{
+        String json = "{\"id\": 1, \"name\": \"Ann\", \"email\": \"ann@hotmail.com\", \"dateOfBirth\": " +
+                "\"1970-01-01\", \"posts\": [], " +
+                "\"likedPosts\": []}";
+
+
+        doThrow(UserEmailAlreadyInUseException.class)
+                .when(userService)
+                .addNewUser(any(User.class));
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/api/v1/users")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest());
 
         verify(userService).addNewUser(any(User.class));
     }
