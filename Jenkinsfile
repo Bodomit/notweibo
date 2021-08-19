@@ -1,18 +1,24 @@
 pipeline {
-  agent{
-        docker{
-          image 'maven:3.8.1-adoptopenjdk-11'
-          args '-v /root/.m2:/root/.m2'
-        }
-      }
+  
   stages {
     stage('Build') {
-      
+      agent{
+        docker{
+          image 'maven:3.8.1-adoptopenjdk-11'
+          args '-v $HOME/.m2:/root/.m2'
+        }
+      }
       steps {
         sh 'mvn -DskipTests -Pprod clean package'
       }
     }
     stage('Test') {
+      agent{
+        docker{
+          image 'maven:3.8.1-adoptopenjdk-11'
+          args '-v $HOME/.m2:/root/.m2'
+        }
+      }
       steps {
         sh 'mvn -Pprod test'
       }
@@ -22,7 +28,6 @@ pipeline {
         }
       }
     }
-
     stage('Deploy to Docker') {
       agent any
       steps {
