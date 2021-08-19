@@ -10,7 +10,7 @@ pipeline {
 
       }
       steps {
-        sh 'mvn -DskipTests -Pprod clean install'
+        sh 'mvn -DskipTests -Pprod clean package'
       }
     }
 
@@ -30,14 +30,14 @@ pipeline {
       }
       steps {
         sh 'mvn -Pprod test'
-        stash 'target/*.jar'
+        stash includes 'target/*.jar', name: 'jar'
       }
     }
 
     stage('Deploy to Docker') {
       agent any
       steps {
-        unstash 'target/*.jar'
+        unstash 'jar'
         sh 'docker build -f Dockerfile-mysql -t notweibo/mysql .'
         sh 'docker build -f Dockerfile-app -t notweibo/app .'
         sh 'docker-compose up -d'
