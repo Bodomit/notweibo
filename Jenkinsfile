@@ -30,6 +30,8 @@ pipeline {
       }
       steps {
         sh 'mvn -Pprod test'
+        sh 'ls'
+        sh 'pwd'
         stash includes: 'target/*.jar', name: 'jar'
       }
     }
