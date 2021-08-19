@@ -30,7 +30,7 @@ pipeline {
       }
       steps {
         sh 'mvn -Pprod test'
-        stash includes 'target/*.jar', name: 'jar'
+        stash includes: 'target/*.jar', name: 'jar'
       }
     }
 
