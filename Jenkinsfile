@@ -35,7 +35,7 @@ pipeline {
     }
 
     stage('Deploy to Docker') {
-      agent any
+      agent none
       steps {
         unstash 'jar'
         sh 'docker build -f Dockerfile-mysql -t notweibo/mysql .'
