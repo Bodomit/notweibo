@@ -1,7 +1,7 @@
 pipeline {
   agent none
   stages {
-    stage('Build') {
+    stage('Build and Test') {
       agent {
         docker {
           image 'maven:3.8.1-adoptopenjdk-11'
@@ -11,30 +11,16 @@ pipeline {
       }
       steps {
         sh 'mvn -DskipTests -Pprod clean package'
+        sh 'mvn -Pprod test'
+         stash includes: 'target/*.jar', name: 'jar'
       }
-    }
-
-    stage('Test') {
-      agent {
-        docker {
-          image 'maven:3.8.1-adoptopenjdk-11'
-          args '-v $HOME/.m2:/root/.m2'
-        }
-
-      }
-      post {
-        always {
+      post{
+        always{
           junit 'target/surefire-reports/*.xml'
         }
-
-      }
-      steps {
-        sh 'mvn -Pprod test'
-        sh 'ls'
-        sh 'pwd'
-        stash includes: 'target/*.jar', name: 'jar'
       }
     }
+
 
     stage('Deploy to Docker') {
       agent none
