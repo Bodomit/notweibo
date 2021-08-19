@@ -24,6 +24,7 @@ pipeline {
     }
 
     stage('Deploy to Docker') {
+      agent any
       steps {
         sh 'docker build -f Dockerfile-mysql -t notweibo/mysql .'
         sh 'docker build -f Dockerfile-app -t notweibo/app .'
