@@ -11,7 +11,6 @@ pipeline {
       }
       steps {
         sh 'mvn -DskipTests -Pprod clean install'
-        archiveArtifacts 'target/*.jar'
       }
     }
 
@@ -31,12 +30,14 @@ pipeline {
       }
       steps {
         sh 'mvn -Pprod test'
+        stash 'target/*.jar'
       }
     }
 
     stage('Deploy to Docker') {
       agent any
       steps {
+        unstash 'target/*.jar'
         sh 'docker build -f Dockerfile-mysql -t notweibo/mysql .'
         sh 'docker build -f Dockerfile-app -t notweibo/app .'
         sh 'docker-compose up -d'
