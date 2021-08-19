@@ -2,15 +2,29 @@ pipeline {
   agent any
   stages {
     stage('Build') {
+      agent{
+        docker{
+          image 'maven:3.8.1'
+        }
+      }
       steps {
         sh 'mvn -DskipTests -Pprod clean package'
       }
     }
 
     stage('Test') {
+      agent{
+        docker{
+          image 'maven:3.8.1'
+        }
+      }
       steps {
         sh 'mvn -Pprod test'
-        junit 'target/surefire-reports/*.xml'
+      }
+      post{
+        always{
+          junit 'target/surefire-reports/*.xml'
+        }
       }
     }
 
