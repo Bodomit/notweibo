@@ -8,17 +8,20 @@ pipeline {
         }
 
       }
+      post {
+        always {
+          junit 'target/surefire-reports/*.xml'
+        }
+
+      }
       steps {
         sh 'mvn -DskipTests -Pprod clean package'
         sh 'mvn -Pprod test'
-        stash includes: 'target/*.jar', name: 'jar'
-      }
-      post{
-        always{
-          junit 'target/surefire-reports/*.xml'
-        }
+        stash(includes: 'target/*.jar', name: 'jar')
+        archiveArtifacts 'target/*.jar'
       }
     }
+
     stage('Deploy to Docker') {
       agent any
       steps {
@@ -29,5 +32,6 @@ pipeline {
         sh 'docker-compose up -d'
       }
     }
+
   }
 }
