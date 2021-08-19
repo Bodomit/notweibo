@@ -9,7 +9,9 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -DskipTests -Pprod clean package'
+        sh 'mvn -DskipTests -Pprod clean install'
+        sh 'pwd'
+        sh 'ls'
       }
     }
     stage('Test') {
