@@ -6,7 +6,7 @@ services:
        dockerfile: Dockerfile-mysql
      image: notweibo/mysql
      ports:
-       - "3306:3306"
+       - "3307:3306"
      volumes:
            - /docker/notweibo/mysql:/var/lib/mysql
      restart: always
