@@ -9,14 +9,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -27,28 +24,17 @@ public class UserRepositoryTests {
     UserRepository userRepository;
 
     List<User> defaultUsers = List.of(
-            new User(1L,
-                    "Ann",
-                    "ann@hotmail.com",
-                    LocalDate.of(1970, 1, 1),
-                    new ArrayList<>(),
-                    new ArrayList<>()),
-            new User(2L,
-                    "Bob",
-                    "bob@hotmail.com",
-                    LocalDate.of(1978, 1, 1),
-                    new ArrayList<>(),
-                    new ArrayList<>())
-    );
+            new User(1L, "Ann", "ann@hotmail.com", LocalDate.of(1970, 1, 1), new ArrayList<>(), new ArrayList<>()),
+            new User(2L, "Bob", "bob@hotmail.com", LocalDate.of(1978, 1, 1), new ArrayList<>(), new ArrayList<>()));
 
     @BeforeEach
-    public void bootstrapDatabase(){
+    public void bootstrapDatabase() {
         userRepository.deleteAll();
         userRepository.saveAll(defaultUsers);
     }
 
     @Test
-    public void testSaveReadDeleteAll(){
+    public void testSaveReadDeleteAll() {
         userRepository.deleteAll();
         List<User> users = userRepository.findAll();
         assertEquals(0, users.size());
@@ -60,13 +46,13 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void testFindByEmailSuccess(){
+    public void testFindByEmailSuccess() {
         Optional<User> bob = userRepository.findUserByEmail("bob@hotmail.com");
         assertTrue(bob.isPresent());
     }
 
     @Test
-    public void testFindByEmailNotFound(){
+    public void testFindByEmailNotFound() {
         Optional<User> emma = userRepository.findUserByEmail("emma@hotmail.com");
         assertFalse(emma.isPresent());
     }
