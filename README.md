@@ -1,10 +1,12 @@
 # Dockerised NotWeibo
 
+Demo Spring Boot application with some pain points fixed / mitigated.
+
 ## Multiple Config Files
 
-A big issue people are having is getting the connection strings in their `application.propeties` files correct.
+An issue people are having is getting the connection strings in their `application.propeties` files correct.
 This is because we have two different configurations: one for local development and one for deploying to Docker as a container.
-To handle this more elegantly, I created 2 separate files: [`application-prod.properties`](https://github.com/Bodomit/notweibo/blob/dockerise/src/main/resources/application-prod.properties) for the docker deployment, and [`application-prod.properties`](https://github.com/Bodomit/notweibo/blob/dockerise/src/main/resources/application-dev.properties) for local development. Each file has the correct connection string.
+To avoid constanly changing the values in `application.properties` I created 2 separate files: [`application-prod.properties`](https://github.com/Bodomit/notweibo/blob/dockerise/src/main/resources/application-prod.properties) for the docker deployment, and [`application-dev.properties`](https://github.com/Bodomit/notweibo/blob/dockerise/src/main/resources/application-dev.properties) for local development. Each file has the correct connection string.
 
 To select which profile to use when building the app, I added the two profiles to maven's [`pom.xml`](https://github.com/Bodomit/notweibo/blob/dockerise/pom.xml) file:
 
@@ -27,7 +29,7 @@ To select which profile to use when building the app, I added the two profiles t
     </profile>
 </profiles>
 ```
-This allows us to specify the profile (using the -P argument) when running maven commands. For example, `mvn -Pprod install` will run the maven install command with the "prod" config, wheras `mvn -Pdev ...` will use the `dev` config. This is very convienient when deploying.
+This allows us to specify the profile (using the -P argument) when running maven commands. For example, `mvn -Pprod install` will run the maven install command with the "prod" config, wheras `mvn -Pdev ...` will use the `dev` config. This is very convienient when deploying and runnign maven commands in our jenkins pipeline.
 
 Note. The following updates also need to be done for this to work:
 
@@ -47,7 +49,7 @@ Note. The following updates also need to be done for this to work:
 If you've implemented unit tests for the controller or repository objects, your builds might be failing because a database is not accessible at build / test time.
 The "normal" way to handle this is to create an in-memory test database to run your tests against. 
 However, that is far too advanced!
-Instead, for now the best way to handle this is for maven to simply ignore those tests.
+Instead, the best way to handle this for now is for maven to simply ignore those bad tests.
 
 The following addition to the [`pom.xml`](https://github.com/Bodomit/notweibo/blob/dockerise/pom.xml) (under the 'plugins' tag) tells maven to ignore the tests causing the problems in NotWeibo. For your own app, only add the tests that cause the build to fail with the communication error.
 
@@ -64,7 +66,7 @@ The following addition to the [`pom.xml`](https://github.com/Bodomit/notweibo/bl
     </configuration>
 </plugin>
 ```
-This is better than commenting out / deleting the tests, as here the tests can still be ran locally from within Intellij.
+This is better than commenting out / deleting the tests, as the tests can still be ran locally from within Intellij.
 
 ## Communication Error after deploying to Docker (and the connection string is correct).
 
